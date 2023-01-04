@@ -18,14 +18,20 @@ namespace Infrastructure.Data
         }
         public async Task<Place> GetPlaceAsync(int id)
         {
-            Place? place = await _db!.Place!.FindAsync(id);
+            Place? place = await _db!.Place!
+                                     .Include(c => c.Country)
+                                     .Include(c => c.Category)
+                                     .FirstOrDefaultAsync(p => p.Id == id);
 
             return place!;
         }
 
         public async Task<IReadOnlyList<Place>> GetPlacesAsync()
         {
-            return await _db!.Place!.ToListAsync();
+            return await _db!.Place!
+                             .Include(c => c.Country)
+                             .Include(c => c.Category)
+                             .ToListAsync();
         }
     }
 }
